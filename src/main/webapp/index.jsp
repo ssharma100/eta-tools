@@ -11,6 +11,7 @@
     <title></title>
   </head>
   <body>
-
+    <h3>OFSC Demo Proxy Server</h3>
+    ETAdirect Response/Proxy Server
   </body>
 </html>
