@@ -1,4 +1,4 @@
-package sc.ofsc;
+package com.oracle.toa;
 
 import java.util.ArrayList;
 import java.util.HashMap;

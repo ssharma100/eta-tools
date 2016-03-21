@@ -1,4 +1,4 @@
-package sc.ofsc;
+package com.oracle.toa;
 
 import it.svario.xpathapi.jaxp.XPathAPI;
 import org.apache.commons.configuration.Configuration;
