@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd
 http://xmlns.jcp.org/xml/ns/javaee "
          version="3.1">
+
     <servlet>
-        <servlet-name>JobServlet</servlet-name>
-        <servlet-class>main.java.sc.ofsc.com.oracle.toa.forward</servlet-class>
+        <servlet-name>ProxyServlet</servlet-name>
+        <servlet-class>com.oracle.toa.ProxyServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>JobServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-name>ProxyServlet</servlet-name>
+        <url-pattern>/proxy/*</url-pattern>
     </servlet-mapping>
 </web-app>

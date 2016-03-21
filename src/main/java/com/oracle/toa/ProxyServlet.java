@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class forward extends HttpServlet {
+public class ProxyServlet extends HttpServlet {
 
     public static boolean CONF_LOADED = false;
     public static String USERNAME = "";
