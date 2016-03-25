@@ -12,6 +12,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -36,20 +38,24 @@ import java.util.TimeZone;
 
 public class ProxyServlet extends HttpServlet {
 
-    public static boolean CONF_LOADED = false;
-    public static String USERNAME = "";
-    public static String PASSWORD = "";
-    public static String COMPANY_NAME = "";
-    public static String INSTANCE_URL = "";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyServlet.class.getName());
+    private static final String DEFAULT_PROP_FILE = "ofsc.properties";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String CONTENT_TYPE_VALUE = "text/xml;charset=UTF-8";
     public static final String SOAP_ACTION = "SOAPAction";
     public static final String SOAP_ACTION_VALUE = "InboundInterfaceService/inbound_interface";
-    static TimeZone tz;
-    static DateFormat df;
-    static MessageDigest md;
 
-    static List<String> debugInfo = new ArrayList<String>();
+    public static String username = "";
+    public static String password = "";
+    public static String companyName = "";
+    public static String instanceUrl = "";
+    private static TimeZone tz;
+    private static DateFormat df;
+    private static MessageDigest md;
+    private static List<String> debugInfo = new ArrayList<String>();
+
+    private static Configuration configuration;
+
 
     static {
         tz = TimeZone.getTimeZone("UTC");
@@ -85,6 +91,22 @@ public class ProxyServlet extends HttpServlet {
         String responseBody = EntityUtils.toString(response.getEntity());
 
         return responseBody;
+    }
+
+    public void init() {
+
+        LOGGER.warn("Starting Servlet: Load Config From: " + DEFAULT_PROP_FILE);
+        Configuration configuration = null;
+        try {
+            configuration = new PropertiesConfiguration(DEFAULT_PROP_FILE);
+        } catch (ConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        username = configuration.getString("USERNAME");
+        password = configuration.getString("PASSWORD");
+        companyName = configuration.getString("COMPANY_NAME");
+        instanceUrl = configuration.getString("INSTANCE_URL");
     }
 
     public static String getBody(HttpServletRequest request) throws IOException {
@@ -213,18 +235,6 @@ public class ProxyServlet extends HttpServlet {
         PrintWriter pw = new PrintWriter(sw);
         try {
 
-            if(!CONF_LOADED) {
-                Configuration configuration = new PropertiesConfiguration("config/ofsc.properties");
-
-                USERNAME = configuration.getString("USERNAME");
-                PASSWORD = configuration.getString("PASSWORD");
-                COMPANY_NAME = configuration.getString("COMPANY_NAME");
-                INSTANCE_URL = configuration.getString("INSTANCE_URL");
-
-                CONF_LOADED = true;
-            }
-
-
             //Get the request body.
             String requestBody = getBody(request);
 
@@ -241,10 +251,10 @@ public class ProxyServlet extends HttpServlet {
 
             String redirectPayload = XPathAPI.selectSingleNodeAsString(document, "Envelope//login");
 
-            String username = USERNAME;
-            String companyName = COMPANY_NAME;
-            String password = PASSWORD;
-            String instanceUrl = INSTANCE_URL;
+            String username = ProxyServlet.username;
+            String companyName = ProxyServlet.companyName;
+            String password = ProxyServlet.password;
+            String instanceUrl = ProxyServlet.instanceUrl;
             boolean debug = false;
 
 
